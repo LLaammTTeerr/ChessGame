@@ -4,6 +4,8 @@
 #include <QTableWidget>
 #include <QPushButton>
 #include <QListWidget>
+#include "chess.hpp"
+#include "ChessBoard.h"
 
 class ChessGame : public QMainWindow
 {
@@ -14,10 +16,10 @@ public:
     ~ChessGame();
 
 private:
-    QTableWidget *chessBoard;
+    ChessBoard *chessBoard;
     QPushButton *btnNewGame, *btnExit;
     QListWidget *moveLog;
 
-    void initializeUI();
-    void initializeChessBoard();
+    void initializeUI(void);
+    void onExitClicked(void);
 };

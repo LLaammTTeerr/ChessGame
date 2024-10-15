@@ -92,9 +92,62 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <QtMoc Include="ChessGame.h" />
-    <ClCompile Include="ChessGame.cpp" />
+    <QtMoc Include="libs\ChessGame.h" />
+    <ClCompile Include="libs\ChessBoard.cpp" />
+    <ClCompile Include="libs\ChessGame.cpp" />
+    <ClCompile Include="libs\chess.hpp" />
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ChessGame.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="libs\ChessBoard.h" />
+    <ClInclude Include="libs\utilities.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\images\black_bishop.svg">
+      <FileType>Document</FileType>
+    </Image>
+    <Image Include="resources\images\black_horse.svg">
+      <FileType>Document</FileType>
+    </Image>
+    <Image Include="resources\images\black_king.svg">
+      <FileType>Document</FileType>
+    </Image>
+    <Image Include="resources\images\black_knight.svg">
+      <FileType>Document</FileType>
+    </Image>
+    <Image Include="resources\images\black_pawn.svg">
+      <FileType>Document</FileType>
+    </Image>
+    <Image Include="resources\images\black_queen.svg">
+      <FileType>Document</FileType>
+    </Image>
+    <Image Include="resources\images\black_rook.svg">
+      <FileType>Document</FileType>
+    </Image>
+    <Image Include="resources\images\white_bishop.svg">
+      <FileType>Document</FileType>
+    </Image>
+    <Image Include="resources\images\white_horse.svg">
+      <FileType>Document</FileType>
+    </Image>
+    <Image Include="resources\images\white_king.svg">
+      <FileType>Document</FileType>
+    </Image>
+    <Image Include="resources\images\white_knight.svg">
+      <FileType>Document</FileType>
+    </Image>
+    <Image Include="resources\images\white_pawn.svg">
+      <FileType>Document</FileType>
+    </Image>
+    <Image Include="resources\images\white_queen.svg">
+      <FileType>Document</FileType>
+    </Image>
+    <Image Include="resources\images\white_rook.svg">
+      <FileType>Document</FileType>
+    </Image>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
