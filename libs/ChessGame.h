@@ -22,4 +22,5 @@ private:
 
     void initializeUI(void);
     void onExitClicked(void);
+    void onNewGameClicked(void);
 };

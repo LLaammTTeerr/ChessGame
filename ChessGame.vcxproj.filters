@@ -45,57 +45,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="ChessGame.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="libs\utilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="resources\images\black_bishop.svg">
+    <ResourceCompile Include="ChessGame.rc">
       <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\images\black_horse.svg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\images\black_king.svg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\images\black_knight.svg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\images\black_pawn.svg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\images\black_queen.svg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\images\black_rook.svg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\images\white_bishop.svg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\images\white_horse.svg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\images\white_king.svg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\images\white_knight.svg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\images\white_pawn.svg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\images\white_queen.svg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\images\white_rook.svg">
-      <Filter>Resource Files</Filter>
-    </Image>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

@@ -15,6 +15,7 @@ public:
     ~ChessBoard();
 
     QPushButton* at(int, int);
+    void reset(void);
 private:
     chess::Board board;
     int selectedRow, selectedCol;

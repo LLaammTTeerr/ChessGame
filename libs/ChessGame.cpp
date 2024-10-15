@@ -42,8 +42,13 @@ void ChessGame::initializeUI(void) {
     rightLayout->addWidget(moveLog);
 
     connect(btnExit, &QPushButton::clicked, this, &ChessGame::onExitClicked);
+    connect(btnNewGame, &QPushButton::clicked, this, &ChessGame::onNewGameClicked);
 }
 
 void ChessGame::onExitClicked(void) {
     close();
+}
+
+void ChessGame::onNewGameClicked(void) {
+    chessBoard->reset();
 }

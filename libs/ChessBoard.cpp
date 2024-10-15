@@ -3,6 +3,7 @@
 #include <QIcon>
 #include <QDebug>
 #include "utilities.h"
+#include <QMessageBox>
 
 ChessBoard::ChessBoard(QWidget* parent) : QWidget(parent), board()
 {
@@ -59,6 +60,13 @@ void ChessBoard::onCellClicked(int row, int col) {
     if (not selecting) {
         chess::Square position = chess::Square(chess::Rank(7 - row), chess::File(col));
         chess::Piece piece = board.at(position);
+        chess::Movelist legalMoves;
+        chess::movegen::legalmoves(legalMoves, board);
+        for (const auto& move : legalMoves) {
+            if (move.from() == position) {
+                this->at(7 - move.to().rank(), move.to().file())->setStyleSheet("background-color: green; border: none");
+            }
+        }
         if (piece != chess::Piece::NONE and board.sideToMove() == piece.color()) {
             selectedRow = row;
             selectedCol = col;
@@ -68,14 +76,34 @@ void ChessBoard::onCellClicked(int row, int col) {
     } else {
         chess::Square from(chess::Rank(7 - selectedRow), chess::File(selectedCol));
         chess::Square to(chess::Rank(7 - row), chess::File(col));
-        if (from != to) {
-            board.makeMove(chess::Move::make(from, to));
+        chess::Movelist legalMoves;
+        chess::movegen::legalmoves(legalMoves, board);
+        bool isLegalMove = false;
+        chess::Move nextMove = NULL;
+        for (const auto& move : legalMoves) {
+            if (move.from() == from and move.to() == to) {
+                nextMove = move;
+                isLegalMove = true;
+            }
+            if (move.from() == from) {
+                resetCellColor(7 - move.to().rank(), move.to().file());
+            }
+        }
+        if (from != to and isLegalMove) {
+            board.makeMove(nextMove);
             syncBoard();
         }
         resetCellColor(row, col);
         resetCellColor(selectedRow, selectedCol);
         selectedRow = selectedCol = -1;
         selecting = false;
+        auto [resultReason, result] = board.isGameOver();
+        if (result == chess::GameResult::NONE) {
+            return;
+        }
+        QMessageBox resultMessage;
+        resultMessage.setText("Game End");
+        resultMessage.exec();
     }
 }
 
@@ -90,9 +118,16 @@ void ChessBoard::syncBoard(void) {
             chess::Piece piece = board.at<chess::Piece>(source);
             this->at(row, col)->setIcon(QIcon());
             if (piece != chess::Piece::NONE) {
-                QIcon icon = QIcon(QString("resources/images/") + getPieceIcon(piece));
+                QIcon icon = QIcon(QString("resources/images/theme_2/") + getPieceIcon(piece));
                 this->at(row, col)->setIcon(icon);
             }
         }
     }
+}
+
+void ChessBoard::reset(void) {
+    board = chess::Board();
+    selectedRow = selectedCol = -1;
+    selecting = false;
+    syncBoard();
 }
