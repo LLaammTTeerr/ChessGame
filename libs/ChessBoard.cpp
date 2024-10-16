@@ -129,5 +129,16 @@ void ChessBoard::reset(void) {
     board = chess::Board();
     selectedRow = selectedCol = -1;
     selecting = false;
+    for (int row = 0; row < 8; row += 1) {
+        for (int col = 0; col < 8; col += 1) {
+            QPushButton* button = squares[row][col];
+            if ((row + col) % 2 == 0) {
+                button->setStyleSheet("background-color: white; border: none");
+            }
+            else {
+                button->setStyleSheet("background-color: gray; border: none");
+            }
+        }
+    }    
     syncBoard();
 }
