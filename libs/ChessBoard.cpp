@@ -118,7 +118,7 @@ void ChessBoard::syncBoard(void) {
             chess::Piece piece = board.at<chess::Piece>(source);
             this->at(row, col)->setIcon(QIcon());
             if (piece != chess::Piece::NONE) {
-                QIcon icon = QIcon(QString("resources/images/theme_2/") + getPieceIcon(piece));
+                QIcon icon = QIcon(QString("./resources/images/theme_2/") + getPieceIcon(piece));
                 this->at(row, col)->setIcon(icon);
             }
         }
