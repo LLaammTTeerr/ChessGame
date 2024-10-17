@@ -5,6 +5,8 @@
 #include <QPushButton>
 #include <vector>
 #include "libs/chess.hpp"
+#include <QListWidget>
+#include "StockfishHandler.h"
 
 class ChessBoard : public QWidget
 {
@@ -14,12 +16,16 @@ public:
     explicit ChessBoard(QWidget* parent = nullptr);
     ~ChessBoard();
 
+    QListWidget* moveLog;
+
     QPushButton* at(int, int);
-    void reset(void);
+    void reset(bool);
 private:
+    StockFish engine;
     chess::Board board;
     int selectedRow, selectedCol;
     bool selecting;
+    bool PvP;
 
     std::vector<std::vector<QPushButton*>> squares;
     void setupBoard(void);

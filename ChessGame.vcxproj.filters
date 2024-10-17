@@ -43,9 +43,15 @@
     <ClCompile Include="libs\ChessBoard.cpp">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="libs\StockfishHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libs\utilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\StockfishHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -53,5 +59,8 @@
     <ResourceCompile Include="ChessGame.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\files\stockfish.exe" />
   </ItemGroup>
 </Project>

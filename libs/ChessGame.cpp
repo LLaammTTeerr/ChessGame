@@ -10,8 +10,7 @@ ChessGame::ChessGame(QWidget* parent) :
     QMainWindow(parent),
     chessBoard(new ChessBoard(this)),
     btnNewGame(new QPushButton("New game", this)),
-    btnExit(new QPushButton("Exit", this)),
-    moveLog(new QListWidget(this))
+    btnExit(new QPushButton("Exit", this))
 {
     this->initializeUI();
 }
@@ -39,7 +38,7 @@ void ChessGame::initializeUI(void) {
     rightLayout->addWidget(btnExit);
 
     rightLayout->addWidget(new QLabel("Move log: ", this));
-    rightLayout->addWidget(moveLog);
+    rightLayout->addWidget(chessBoard->moveLog);
 
     connect(btnExit, &QPushButton::clicked, this, &ChessGame::onExitClicked);
     connect(btnNewGame, &QPushButton::clicked, this, &ChessGame::onNewGameClicked);
@@ -50,5 +49,20 @@ void ChessGame::onExitClicked(void) {
 }
 
 void ChessGame::onNewGameClicked(void) {
-    chessBoard->reset();
+    QMessageBox modeGameQuery(this);
+    QPushButton* PvPButton = modeGameQuery.addButton(QString("PvP"), QMessageBox::AcceptRole);
+    QPushButton* PvEutton = modeGameQuery.addButton(QString("PvE"), QMessageBox::AcceptRole);
+    QPushButton* cancelButton = modeGameQuery.addButton(QMessageBox::Cancel);
+    modeGameQuery.setDefaultButton(PvPButton);
+    modeGameQuery.setWindowTitle("Game mode");
+    modeGameQuery.setText("Choose your game mode!");
+    modeGameQuery.exec();
+
+    if (modeGameQuery.clickedButton() == cancelButton) {
+        return;
+    }
+
+    bool PvP = modeGameQuery.clickedButton() == PvPButton;
+
+    chessBoard->reset(PvP);
 }

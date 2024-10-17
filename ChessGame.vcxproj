@@ -73,6 +73,12 @@
       <Command>xcopy /E /I /Y "$(ProjectDir)Resources" "$(TargetDir)Resources"
 </Command>
     </PostBuildEvent>
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\lamte\Downloads\Compressed\boost_1_86_0\boost_1_86_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>C:\Users\lamte\Downloads\Compressed\boost_1_86_0\boost_1_86_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
     <ClCompile>
@@ -107,14 +113,19 @@
     <ClCompile Include="libs\ChessBoard.cpp" />
     <ClCompile Include="libs\ChessGame.cpp" />
     <ClCompile Include="libs\chess.hpp" />
+    <ClCompile Include="libs\StockfishHandler.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="libs\ChessBoard.h" />
+    <ClInclude Include="libs\StockfishHandler.h" />
     <ClInclude Include="libs\utilities.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ChessGame.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\files\stockfish.exe" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

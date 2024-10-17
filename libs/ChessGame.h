@@ -3,7 +3,6 @@
 #include <QtWidgets/QMainWindow>
 #include <QTableWidget>
 #include <QPushButton>
-#include <QListWidget>
 #include "chess.hpp"
 #include "ChessBoard.h"
 
@@ -18,7 +17,6 @@ public:
 private:
     ChessBoard *chessBoard;
     QPushButton *btnNewGame, *btnExit;
-    QListWidget *moveLog;
 
     void initializeUI(void);
     void onExitClicked(void);

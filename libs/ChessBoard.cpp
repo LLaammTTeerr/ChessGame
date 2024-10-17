@@ -5,7 +5,7 @@
 #include "utilities.h"
 #include <QMessageBox>
 
-ChessBoard::ChessBoard(QWidget* parent) : QWidget(parent), board()
+ChessBoard::ChessBoard(QWidget* parent) : QWidget(parent), moveLog(new QListWidget(this)), board(), PvP(true), engine(0)
 {
     setupBoard();
 }
@@ -57,6 +57,9 @@ void ChessBoard::setupBoard(void)
 
 void ChessBoard::onCellClicked(int row, int col) {
     QPushButton* button = this->at(row, col);
+    if (not PvP and board.sideToMove() != chess::Color::WHITE) {
+        return;
+    }
     if (not selecting) {
         chess::Square position = chess::Square(chess::Rank(7 - row), chess::File(col));
         chess::Piece piece = board.at(position);
@@ -90,8 +93,13 @@ void ChessBoard::onCellClicked(int row, int col) {
             }
         }
         if (from != to and isLegalMove) {
+            moveLog->addItem(QString(chess::uci::moveToLan(board, nextMove).c_str()));
             board.makeMove(nextMove);
             syncBoard();
+            if (not PvP) {
+                board.makeMove(chess::uci::uciToMove(board, engine.getNextMove(board.getFen())));
+                syncBoard();
+            }
         }
         resetCellColor(row, col);
         resetCellColor(selectedRow, selectedCol);
@@ -125,7 +133,7 @@ void ChessBoard::syncBoard(void) {
     }
 }
 
-void ChessBoard::reset(void) {
+void ChessBoard::reset(bool PvP) {
     board = chess::Board();
     selectedRow = selectedCol = -1;
     selecting = false;
@@ -139,6 +147,7 @@ void ChessBoard::reset(void) {
                 button->setStyleSheet("background-color: gray; border: none");
             }
         }
-    }    
+    }
+    this->PvP = PvP;
     syncBoard();
 }
