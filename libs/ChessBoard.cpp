@@ -97,7 +97,9 @@ void ChessBoard::onCellClicked(int row, int col) {
             board.makeMove(nextMove);
             syncBoard();
             if (not PvP) {
-                board.makeMove(chess::uci::uciToMove(board, engine.getNextMove(board.getFen())));
+                std::string BotMove = engine.getNextMove(board.getFen());
+                moveLog->addItem(QString(BotMove.c_str()));
+                board.makeMove(chess::uci::uciToMove(board, BotMove));
                 syncBoard();
             }
         }
@@ -148,6 +150,7 @@ void ChessBoard::reset(bool PvP) {
             }
         }
     }
+    this->moveLog->clear();
     this->PvP = PvP;
     syncBoard();
 }

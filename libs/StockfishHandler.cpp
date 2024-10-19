@@ -1,6 +1,7 @@
 #include "StockfishHandler.h"
 #include "chess.hpp"
 #include <boost/process.hpp>
+#include <boost/process/windows.hpp>
 #include <boost/asio.hpp>
 #include <iostream>
 #include <string>
@@ -14,7 +15,10 @@ namespace bp = boost::process;
 namespace asio = boost::asio;
 
 StockFish::StockFish(int depth = 20) {
-	this->depth = depth;
+    this->depth = depth;
+}
+
+std::string StockFish::getNextMove(std::string posFen) {
     asio::io_context io;
 
     bp::ipstream stockfish_stdout;
@@ -31,30 +35,19 @@ StockFish::StockFish(int depth = 20) {
         stockfish_path,
         bp::std_out > stockfish_stdout,
         bp::std_in < stockfish_stdin
+#ifdef _WIN32
+        , bp::windows::hide  // This hides the console window on Windows
+#endif
     );
 
     std::mutex mtx;
     std::condition_variable cv;
-    bool uciok_received = false;
-    bool readyok_received = false;
-    std::string best_move;
+    std::string best_move = "";
 
     // Reader thread to process Stockfish output
     std::thread reader([&]() {
         std::string line;
         while (std::getline(stockfish_stdout, line)) {
-            std::cout << "Stockfish: " << line << std::endl;
-
-            if (line.find("uciok") != std::string::npos) {
-                std::lock_guard<std::mutex> lock(mtx);
-                uciok_received = true;
-                cv.notify_one();
-            }
-            if (line.find("readyok") != std::string::npos) {
-                std::lock_guard<std::mutex> lock(mtx);
-                readyok_received = true;
-                cv.notify_one();
-            }
             if (line.find("bestmove") != std::string::npos) {
                 // Extract the best move
                 size_t pos = line.find("bestmove");
@@ -66,29 +59,33 @@ StockFish::StockFish(int depth = 20) {
         }
         });
 
-    // Initialize UCI
-    stockfish_stdin << "uci" << std::endl;
-
-    // Wait for uciok
-    {
-        std::unique_lock<std::mutex> lock(mtx);
-        cv.wait(lock, [&] { return uciok_received; });
+    int depth, skill;
+    switch (this->mode) {
+    case 1:
+        depth = 1;
+        skill = 1;
+        break;
+    case 2:
+        depth = 5;
+        skill = 10;
+        break;
+    case 3:
+        depth = 7;
+        skill = 20;
+        break;
+    default:
+        depth = 5;
+        skill = 5;
+        break;
     }
 
-    // Check readiness
-    stockfish_stdin << "isready" << std::endl;
-
-    // Wait for readyok
-    {
-        std::unique_lock<std::mutex> lock(mtx);
-        cv.wait(lock, [&] { return readyok_received; });
-    }
 
     // Set position to startpos with some moves
-    stockfish_stdin << "position startpos moves e2e4 e7e5 g1f3" << std::endl;
+    stockfish_stdin << "setoption name Skill Level value " + std::to_string(skill) << std::endl;
+    stockfish_stdin << "position fen " + posFen << std::endl;
 
     // Request best move
-    stockfish_stdin << "go depth 15" << std::endl;
+    stockfish_stdin << "go depth " + std::to_string(skill) << std::endl;
 
     // Wait for best move
     {
@@ -96,23 +93,24 @@ StockFish::StockFish(int depth = 20) {
         cv.wait(lock, [&] { return !best_move.empty(); });
     }
 
-    QMessageBox msg;
-    msg.setText(QString(best_move.c_str()));
-    msg.exec();
+    //QMessageBox msg;
+    //msg.setText(QString(best_move.c_str()));
+    //msg.exec();
 
     // Terminate Stockfish
     stockfish_stdin << "quit" << std::endl;
     stockfish_process.wait();
     reader.join();
+    return best_move;
 }
 
 StockFish::~StockFish(void) {
-	
+
 }
 
-std::string StockFish::getNextMove(std::string posFen) {
-	chess::Board board(posFen);
-	chess::Movelist moveList;
-	chess::movegen::legalmoves(moveList, board);
-    return "ABC";
-}
+//std::string StockFish::getNextMove(std::string posFen) {
+//	chess::Board board(posFen);
+//	chess::Movelist moveList;
+//	chess::movegen::legalmoves(moveList, board);
+//    return "ABC";
+//}
