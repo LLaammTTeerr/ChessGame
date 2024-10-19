@@ -7,6 +7,7 @@
 #include "libs/chess.hpp"
 #include <QListWidget>
 #include "StockfishHandler.h"
+#include <boost/iterator/detail/config_def.hpp>
 
 class ChessBoard : public QWidget
 {
@@ -28,10 +29,18 @@ private:
     bool PvP;
 
     std::vector<std::vector<QPushButton*>> squares;
+    void Undo(void);
+    void Redo(void);
+    
+    void makeSquaresAllowToMove(int, int);
+    void playerMove(int, int);
+    void botMove(void);
+    bool checkGameEnd(void);
+
+    void onCellClicked(int, int);
     void setupBoard(void);
     void syncBoard(void);
     void resetCellColor(int, int);
-    void onCellClicked(int, int);
 };
 
 #endif // CHESSBOARD_H

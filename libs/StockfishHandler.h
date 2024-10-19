@@ -8,7 +8,7 @@ public:
 	StockFish(int);
 	~StockFish(void);
 
-	int mode = 1;
+	int mode = 2;
 
 	std::string getNextMove(std::string);
 };

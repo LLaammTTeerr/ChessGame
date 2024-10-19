@@ -55,72 +55,106 @@ void ChessBoard::setupBoard(void)
     syncBoard();
 }
 
+
+void ChessBoard::makeSquaresAllowToMove(int row, int col) {
+    QPushButton* button = this->at(row, col);
+    
+    chess::Square position = chess::Square(chess::Rank(7 - row), chess::File(col));
+    chess::Piece piece = board.at(position);
+    if (piece == chess::Piece::NONE or board.sideToMove() != piece.color()) return;
+
+    chess::Movelist legalMoves;
+    chess::movegen::legalmoves(legalMoves, board);
+    for (const auto& move : legalMoves) {
+        if (move.from() == position) {
+            this->at(7 - move.to().rank(), move.to().file())->setStyleSheet("background-color: green; border: none");
+        }
+    }
+    selectedRow = row;
+    selectedCol = col;
+    selecting = true;
+    button->setStyleSheet("background-color: yellow; border: none");
+}
+
+void ChessBoard::playerMove(int row, int col) {
+    chess::Square from(chess::Rank(7 - selectedRow), chess::File(selectedCol));
+    chess::Square to(chess::Rank(7 - row), chess::File(col));
+    chess::Movelist legalMoves;
+    chess::movegen::legalmoves(legalMoves, board);
+    bool isLegalMove = false;
+    chess::Move nextMove = NULL;
+    for (const auto& move : legalMoves) {
+        if (move.from() == from and move.to() == to) {
+            nextMove = move;
+            isLegalMove = true;
+        }
+        if (move.from() == from) {
+            resetCellColor(7 - move.to().rank(), move.to().file());
+        }
+    }
+    if (from != to and isLegalMove) {
+        moveLog->addItem(QString(chess::uci::moveToLan(board, nextMove).c_str()));
+        board.makeMove(nextMove);
+        syncBoard();
+    }
+    resetCellColor(row, col);
+    resetCellColor(selectedRow, selectedCol);
+    selectedRow = selectedCol = -1;
+    selecting = false;
+}
+
+void ChessBoard::botMove(void) {
+    if (not PvP && board.sideToMove() == chess::Color::BLACK) {
+        std::string BotMove = engine.getNextMove(board.getFen());
+        moveLog->addItem(QString(BotMove.c_str()));
+        board.makeMove(chess::uci::uciToMove(board, BotMove));
+        syncBoard();
+    }
+}
+
 void ChessBoard::onCellClicked(int row, int col) {
     QPushButton* button = this->at(row, col);
     if (not PvP and board.sideToMove() != chess::Color::WHITE) {
         return;
     }
     if (not selecting) {
-        chess::Square position = chess::Square(chess::Rank(7 - row), chess::File(col));
-        chess::Piece piece = board.at(position);
-        chess::Movelist legalMoves;
-        chess::movegen::legalmoves(legalMoves, board);
-        for (const auto& move : legalMoves) {
-            if (move.from() == position) {
-                this->at(7 - move.to().rank(), move.to().file())->setStyleSheet("background-color: green; border: none");
-            }
-        }
-        if (piece != chess::Piece::NONE and board.sideToMove() == piece.color()) {
-            selectedRow = row;
-            selectedCol = col;
-            selecting = true;
-            button->setStyleSheet("background-color: yellow; border: none");
-        }
-    } else {
-        chess::Square from(chess::Rank(7 - selectedRow), chess::File(selectedCol));
-        chess::Square to(chess::Rank(7 - row), chess::File(col));
-        chess::Movelist legalMoves;
-        chess::movegen::legalmoves(legalMoves, board);
-        bool isLegalMove = false;
-        chess::Move nextMove = NULL;
-        for (const auto& move : legalMoves) {
-            if (move.from() == from and move.to() == to) {
-                nextMove = move;
-                isLegalMove = true;
-            }
-            if (move.from() == from) {
-                resetCellColor(7 - move.to().rank(), move.to().file());
-            }
-        }
-        if (from != to and isLegalMove) {
-            moveLog->addItem(QString(chess::uci::moveToLan(board, nextMove).c_str()));
-            board.makeMove(nextMove);
-            syncBoard();
-            if (not PvP) {
-                std::string BotMove = engine.getNextMove(board.getFen());
-                moveLog->addItem(QString(BotMove.c_str()));
-                board.makeMove(chess::uci::uciToMove(board, BotMove));
-                syncBoard();
-            }
-        }
-        resetCellColor(row, col);
-        resetCellColor(selectedRow, selectedCol);
-        selectedRow = selectedCol = -1;
-        selecting = false;
-        auto [resultReason, result] = board.isGameOver();
-        if (result == chess::GameResult::NONE) {
-            return;
-        }
-        QMessageBox resultMessage;
-        resultMessage.setText("Game End");
-        resultMessage.exec();
+        makeSquaresAllowToMove(row, col);
+    } 
+    else {
+        playerMove(row, col);
+        if (checkGameEnd()) return;
+
+        botMove();        
+        if (checkGameEnd()) return;
     }
 }
 
+bool ChessBoard::checkGameEnd(void) {
+    auto [resultReason, result] = board.isGameOver();
+    if (result == chess::GameResult::NONE) {
+        return false;
+    }
+    QMessageBox resultMessage;
+    resultMessage.setText("Game End");
+    resultMessage.exec();
+    return true;
+}
+
+void ChessBoard::Undo(void) {
+
+}
+
+void ChessBoard::Redo(void) {
+
+}
+
+
+// OK
 QPushButton* ChessBoard::at(int row, int col) {
     return this->squares[row][col];
 }
 
+// OK
 void ChessBoard::syncBoard(void) {
     for (int row = 0; row < 8; row += 1) {
         for (int col = 0; col < 8; col += 1) {
@@ -135,6 +169,7 @@ void ChessBoard::syncBoard(void) {
     }
 }
 
+// OK
 void ChessBoard::reset(bool PvP) {
     board = chess::Board();
     selectedRow = selectedCol = -1;

@@ -63,19 +63,19 @@ std::string StockFish::getNextMove(std::string posFen) {
     switch (this->mode) {
     case 1:
         depth = 1;
-        skill = 1;
+        skill = 2;
         break;
     case 2:
-        depth = 5;
-        skill = 10;
+        depth = 2;
+        skill = 3;
         break;
     case 3:
-        depth = 7;
-        skill = 20;
+        depth = 3;
+        skill = 4;
         break;
     default:
-        depth = 5;
-        skill = 5;
+        depth = 1;
+        skill = 2;
         break;
     }
 
