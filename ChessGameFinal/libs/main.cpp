@@ -1,4 +1,4 @@
-#include "view.h"
+#include "../header/view.h"
 #include <QApplication>
 
 int main(int argc, char* argv[])

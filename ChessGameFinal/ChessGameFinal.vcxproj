@@ -91,7 +91,7 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -105,13 +105,14 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="x64\loadgameui.cpp" />
     <ClCompile Include="x64\settingsMenu.cpp">
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
       <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
@@ -165,6 +166,7 @@
     <QtMoc Include="x64\themesSetting.h" />
     <QtMoc Include="x64\svgbutton.h" />
     <QtMoc Include="x64\settingsMenu.h" />
+    <QtMoc Include="x64\loadgameui.h" />
     <ClInclude Include="x64\soundeffects.h" />
     <ClInclude Include="x64\StockfishHandler.h" />
     <ClInclude Include="x64\utilities.h" />

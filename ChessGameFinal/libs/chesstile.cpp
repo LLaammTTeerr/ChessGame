@@ -1,4 +1,4 @@
-#include "chesstile.h"
+#include "../header/chesstile.h"
 #include <QLinearGradient>
 #include <iostream>
 
@@ -42,12 +42,12 @@ void ChessTile::canAttackHighlight() {
 void ChessTile::setTheme(int index) {
     switch (index) {
     case 0: // Classic
-        lightColor = QColor(222, 184, 135); // Light brown
-        darkColor = QColor(139, 69, 19); // Dark brown
-        break;
-    case 1: // Modern
         lightColor = Qt::white; // Light gray
         darkColor = Qt::gray;
+        break;
+    case 1: // Modern
+        lightColor = QColor(222, 184, 135); // Light brown
+        darkColor = QColor(139, 69, 19); // Dark brown
         break;
     case 2: // High Contrast
         lightColor = QColor(235, 236, 208); // White

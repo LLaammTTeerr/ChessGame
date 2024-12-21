@@ -4,6 +4,28 @@
 #include <QString>
 #include <string>
 
+inline float volumeEffect = 1.0;
+
+struct GameData{
+    std::string boardFen;
+    int playerSide;
+    int reverseBoard;
+    int gameMode;
+    int gameDifficulty;
+    int tilesTheme;
+    int piecesTheme;
+    chess::Move curMove;
+    GameData(){
+        boardFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+        playerSide = 1;
+        reverseBoard = 1;
+        gameMode = 0;
+        gameDifficulty = 0;
+        tilesTheme = 0;
+        piecesTheme = 0;
+    }
+};
+
 const QString _piecesOrder[] = {
 	"pawn",
 	"knight",

@@ -13,10 +13,10 @@ public:
     void soundCapture(void);
     void soundMoveCheck(void);
     void soundCastling(void);
-	void setVolume(float volume) { this->volume = volume; }
+    void resetVolume(float volume);
+    float volume = 1.0f;
 
 private:
-	float volume = 1.0f;
     QSoundEffect moveSelfSound;
     QSoundEffect promoteSound;
     QSoundEffect captureSound;

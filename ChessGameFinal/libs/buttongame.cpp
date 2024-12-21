@@ -1,4 +1,4 @@
-#include "buttongame.h"
+#include "../header/buttongame.h"
 #include <QBrush>
 #include <QPen>
 #include <QFont>
@@ -9,55 +9,42 @@ ButtonGame::ButtonGame(const QString& text, const QRectF& rect, QGraphicsItem* p
     setPen(Qt::NoPen);
     // Thêm văn bản vào button
     QGraphicsTextItem* label = new QGraphicsTextItem(text, this);
-	label->setFont(QFont("Courier New", 14));
-	label->setDefaultTextColor(Qt::white);
+    label->setFont(QFont("Courier New", 14));
+    label->setDefaultTextColor(Qt::white);
     label->setPos(rect.width() / 2 - label->boundingRect().width() / 2,
                   rect.height() / 2 - label->boundingRect().height() / 2); // Căn giữa văn bản
-    setBackgroundImage("./resources/buttons/button_1.png");
-    setHoverImage("./resources/buttons/button_1_hover.png");
-    setClickyImage("./resources/buttons/button_1_clicky.png");
+    setBackgroundImage(":/assets/buttons/button_1.png");
+    clickySound.setSource(QUrl::fromLocalFile(":/assets/soundeffect/clicky.wav"));
+    clickySound.setVolume(volumeEffect);
 }
 
 void ButtonGame::resetBackground(void) {
-	setBrush(QBrush(backgroundImage.scaled(rect().size().toSize(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation)));
+    setBrush(QBrush(backgroundImage.scaled(rect().size().toSize())));
 }
 
 /*....................Set Image Background....................*/
 void ButtonGame::setBackgroundImage(const QString& imagePath) {
     backgroundImage.load(imagePath); // Tải hình ảnh
-    setBrush(QBrush(backgroundImage.scaled(rect().size().toSize(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation))); // Thiết lập hình ảnh làm background
-}
-
-void ButtonGame::setHoverImage(const QString& imagePath) {
-    hoverImage.load(imagePath);
-}
-
-void ButtonGame::setClickyImage(const QString& imagePath) {
-    clickyImage.load(imagePath);
+    setBrush(QBrush(backgroundImage.scaled(rect().size().toSize()))); // Thiết lập hình ảnh làm background
 }
 ///////////////////////////////////////////////////////////////
 
 
 /*....................Mouse Event....................*/
 void ButtonGame::mousePressEvent(QGraphicsSceneMouseEvent* event) {
+    clickySound.setVolume(volumeEffect);
+    clickySound.play();
+    setScale(1.0);
     emit clicked();
-    //setBrush(QBrush(clickyImage.scaled(rect().size().toSize(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation)));
-    //QTimer::singleShot(50, [this]() {
-    //    setBrush(QBrush(hoverImage.scaled(rect().size().toSize(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation)));
-    //});
-    //event->accept();
-	setScale(1.0);
     QGraphicsRectItem::mousePressEvent(event);
 }
 
 void ButtonGame::hoverEnterEvent(QGraphicsSceneHoverEvent* event) {
-    //setBrush(QBrush(hoverImage.scaled(rect().size().toSize(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation)));
     setScale(1.05);
     QGraphicsRectItem::hoverEnterEvent(event);
 }
 
 void ButtonGame::hoverLeaveEvent(QGraphicsSceneHoverEvent* event) {
-    //setBrush(QBrush(backgroundImage.scaled(rect().size().toSize(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation)));
     setScale(1.0);
     QGraphicsRectItem::hoverLeaveEvent(event);
 }

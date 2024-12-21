@@ -1,34 +1,46 @@
 #pragma once
 
-#include "settingsMenu.h"
 #include "svgbutton.h"
+#include "utilities.h"
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
+#include <QGraphicsProxyWidget>
 #include <QGraphicsTextItem>
-#include <QSoundEffect>
+#include <QMediaPlayer>
+#include <QAudioOutput>
 #include <QUrl>
 #include <QSlider>
 #include <QListWidget>
 #include <QDir>
 #include <QFileInfo>
+#include <QMap>
 
 
 class SettingsMenu : public QGraphicsScene {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	SettingsMenu(QObject* parent = nullptr);
-	float musicVolume = 0.5, soundEffectVolume = 1.0;
+    SettingsMenu(QObject* parent = nullptr);
+    ~SettingsMenu();
+    float musicVolume = 0.5f, soundEffectVolume = 1.0f;
+
 signals:
-	void backActivated();
-	void soundEffectVolumeChanged();
+    void backActivated();
+    void soundEffectVolumeChanged();
+
+private slots:
+    void changeMusic(QListWidgetItem*);
+    void updateVolume(int);
 
 private:
-	QGraphicsTextItem* txtSettings, * txtMusic, * txtSoundEffect;
-	QSoundEffect* backgroundMusic;
-	QSlider* backgroundMusicSlider, * soundEffectSlider;
-	SvgButton* btnBack;
+    QGraphicsTextItem* txtSettings, * txtMusic, * txtSoundEffect;
+    QSlider* backgroundMusicSlider, * soundEffectSlider;
+    SvgButton* btnBack;
+    QMap<QString, QMediaPlayer*> soundEffects;
+    QMap<QString, QAudioOutput*> audioOutputs;
 
-	QListWidget listMusic;
-	void initListMusic(const QString &path);
+    QGraphicsProxyWidget *listMusicProxy;
+    QListWidget listMusic;
+    QMediaPlayer* createMediaPlayer(const QString&);
+    void initListMusic(const QString &path);
 };

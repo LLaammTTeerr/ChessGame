@@ -26,30 +26,3 @@ private:
     bool isHighlighted;
     double ratioMixColor = 0.8;
 };
-
-
-
-//#pragma once
-//
-//#include <QGraphicsRectItem>
-//#include <QBrush>
-//#include <QPen>
-//#include <QColor>
-//
-//constexpr int tileSize = 70;  // Kích thước mỗi ô vuông
-//constexpr int boardSize = 8;  // Số ô vuông trên mỗi hàng/cột
-//
-//class ChessTile : public QGraphicsRectItem {
-//public:
-//	ChessTile(int, int);
-//	void toggleHighlight();
-//	void canMoveHighlight();
-//	void resetTitle();
-//
-//protected:
-//
-//private:
-//	QColor originalColor;
-//	bool isHighlighted;
-//};
-//

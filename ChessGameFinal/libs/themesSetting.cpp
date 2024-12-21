@@ -1,4 +1,4 @@
-#include "themesSetting.h"
+#include "../header/themesSetting.h"
 
 #include <iostream>
 
@@ -66,7 +66,7 @@ ThemesSetting::ThemesSetting(QObject* parent) :
 			syncBoard();
 		});
 	}
-	btnBack = new SvgButton("./resources/buttons/back.svg");
+    btnBack = new SvgButton(":/assets/buttons/back.svg");
 	btnBack->fixSize(50);
 	btnBack->setPos(10, 10);
 	addItem(btnBack);
@@ -95,3 +95,30 @@ void ThemesSetting::syncBoard() {
 		}
 	}
 }
+
+ThemesSetting::~ThemesSetting() {
+    // // Delete dynamically allocated chess tiles and pieces
+    // for (int i = 0; i < 8; ++i) {
+    //     for (int j = 0; j < 8; ++j) {
+    //         delete tiles[i][j];
+    //         delete pieces[i][j];
+    //     }
+    // }
+
+    // // Delete dynamically allocated QGraphicsTextItems
+    // delete txtPiecesTheme;
+    // delete txtTilesTheme;
+
+    // // Delete dynamically allocated ButtonGame objects
+    // for (int i = 0; i < 3; ++i) {
+    //     delete btnPiecesTheme[i];
+    // }
+    // for (int i = 0; i < 9; ++i) {
+    //     delete btnTilesTheme[i];
+    // }
+
+    // // Delete dynamically allocated buttons
+    // delete btnSaveChange;
+    // delete btnBack;
+}
+

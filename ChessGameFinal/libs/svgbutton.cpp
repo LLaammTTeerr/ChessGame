@@ -1,9 +1,9 @@
-#include "svgbutton.h"
+#include "../header/svgbutton.h"
 
 SvgButton::SvgButton(const QString& imagePath, QGraphicsItem* parent)
 	: QGraphicsSvgItem(parent)
 {
-	setImageWithPath(imagePath);
+    setImageWithPath(imagePath);
 }
 
 void SvgButton::setImageWithPath(const QString& imagePath) {
@@ -22,11 +22,11 @@ void SvgButton::fixSize(int size) {
 }
 
 void SvgButton::mousePressEvent(QGraphicsSceneMouseEvent* event) {
-	setScale(0.9);
-	emit clicked();
-	QTimer::singleShot(50, [this]() {
-		setScale(1.0);
-	});
+    setScale(0.9);
+    QTimer::singleShot(50, [this]() {
+        setScale(1.0);
+    });
+    emit clicked();
 	QGraphicsSvgItem::mousePressEvent(event);
 }
 

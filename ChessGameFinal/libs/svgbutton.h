@@ -1,7 +1,7 @@
 #pragma once
 
-#include <QtSvgWidgets/QGraphicsSvgItem>
-#include <QtSvg/QSvgRenderer>
+#include <QGraphicsSvgItem>
+#include <QSvgRenderer>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsSceneHoverEvent>
 #include <QGraphicsDropShadowEffect>
@@ -20,10 +20,7 @@ signals:
     void clicked();
 
 protected:
-	void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
+    void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
 	void hoverEnterEvent(QGraphicsSceneHoverEvent* event) override;
 	void hoverLeaveEvent(QGraphicsSceneHoverEvent* event) override;
-
-private:
-
 };

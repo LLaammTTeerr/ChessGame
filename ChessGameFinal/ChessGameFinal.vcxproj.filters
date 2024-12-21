@@ -76,6 +76,9 @@
     <ClCompile Include="x64\settingsMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="x64\loadgameui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="x64\view.h">
@@ -103,6 +106,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="x64\settingsMenu.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="x64\loadgameui.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

@@ -1,4 +1,4 @@
-#include "chesspiece.h"
+#include "../header/chesspiece.h"
 #include <QDebug>
 #include <QFile>
 
@@ -17,7 +17,7 @@ void ChessPiece::resetPieceImage(const int theme, const QString& pieceType) {
         return;
     }
 
-	imagePath = "./resources/images/theme_" + QString::number(theme) + "/" + pieceType;
+    imagePath = ":/assets/images/Theme_" + QString::number(theme) + "/" + pieceType;
 
     // Load the SVG file directly into QGraphicsSvgItem
     setSharedRenderer(new QSvgRenderer(imagePath, this));

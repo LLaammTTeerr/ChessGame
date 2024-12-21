@@ -1,74 +1,127 @@
-#include "view.h"
+#include "../header/view.h"
 
 View::View() :
-	m_gameScene(new GameScene()),
 	m_chessBoard(new ChessBoard()),
 	m_mainMenu(new MainMenu()),
 	m_themesSetting(new ThemesSetting()),
-	m_settingsMenu(new SettingsMenu())
+    m_settingsMenu(new SettingsMenu()),
+    m_loadGameUI(new LoadGameUI())
 {
 	setWindowTitle("Chess Game BL");
 	setFixedSize(QSize(Width, Height));
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-	setStyleSheet(QString("QGraphicsView { border-image: url(%1) 0 0 0 0 stretch stretch; }").arg("./resources/backgroundimage/chessgame_menu.jpg"));
-	
-
+    setStyleSheet(QString("QGraphicsView { border-image: url(%1) 0 0 0 0 stretch stretch; }").arg(":/assets/backgroundimage/chessgame_menu.jpg"));
 	setScene(m_mainMenu);
-	//setScene(m_settingsMenu);
+    sceneNum = 0;
 
-	// Cursor style
-	QPixmap pixmap("./resources/cursor/cursor.png");
-	customCursor = QCursor(pixmap);
-	//setCursor(customCursor);
-
-	// Background ChessBoard
-	//setScene(m_mainMenu);
-	//setStyleSheet("background-image: url(./resources/backgroundimage/chessboard_background.jpg); background-repeat: no-repeat; background-position: center;");
-
-	
 	// Main Menu
-	connect(m_mainMenu, &MainMenu::playgameActivated, [this]() {
-		setStyleSheet(QString("QGraphicsView { border-image: url(%1) 0 0 0 0 stretch stretch; }").arg("./resources/backgroundimage/chessboard_background.jpg"));
+    connect(m_mainMenu, &MainMenu::playgameActivated, this, [&]() {
+        setStyleSheet(QString("QGraphicsView { border-image: url(%1) 0 0 0 0 stretch stretch; }").arg(":/assets/backgroundimage/chessboard_background.jpg"));
 		m_chessBoard->setGameMode(m_mainMenu->gameMode, m_mainMenu->gameDifficulty, m_mainMenu->playerSide);
 		m_chessBoard->resetBoard();
+        sceneNum = 1;
 		setScene(m_chessBoard);
 	});
-	connect(m_mainMenu, &MainMenu::themeActivated, [this]() {
+    connect(m_mainMenu, &MainMenu::loadgameActivated, this, [&](){
+        m_loadGameUI->reloadJsonFileList();
+        setScene(m_loadGameUI);
+    });
+    connect(m_mainMenu, &MainMenu::themeActivated, this, [&]() {
 		setScene(m_themesSetting);
 	});
-	connect(m_mainMenu, &MainMenu::settingsActivated, [this]() {
+    connect(m_mainMenu, &MainMenu::mainMenuActivated, this, [&](){
+        sceneNum = 0;
+    });
+    connect(m_mainMenu, &MainMenu::settingsActivated, this, [&]() {
 		setScene(m_settingsMenu);
 	});
-	connect(m_mainMenu, &MainMenu::exitActivated, [this]() {
+    connect(m_mainMenu, &MainMenu::exitActivated, this, [&]() {
 		close();
 	});
+    connect(m_mainMenu, &MainMenu::backActivated, this, [&](){
+        if(sceneNum == 1){
+            setStyleSheet(QString("QGraphicsView { border-image: url(%1) 0 0 0 0 stretch stretch; }").arg(":/assets/backgroundimage/chessboard_background.jpg"));
+            setScene(m_chessBoard);
+        }
+    });
+
+    // Load Game UI
+    connect(m_loadGameUI, &LoadGameUI::playgameActivated, this, [&](const GameData& data){
+        setStyleSheet(QString("QGraphicsView { border-image: url(%1) 0 0 0 0 stretch stretch; }").arg(":/assets/backgroundimage/chessboard_background.jpg"));
+        m_chessBoard->loadGame(data);
+        sceneNum = 1;
+        setScene(m_chessBoard);
+    });
+    connect(m_loadGameUI, &LoadGameUI::backActivated, this, [&](){
+        switch (sceneNum){
+            case 0:
+                setStyleSheet(QString("QGraphicsView { border-image: url(%1) 0 0 0 0 stretch stretch; }").arg(":/assets/backgroundimage/chessgame_menu.jpg"));
+                setScene(m_mainMenu);
+                break;
+            case 1:
+                setStyleSheet(QString("QGraphicsView { border-image: url(%1) 0 0 0 0 stretch stretch; }").arg(":/assets/backgroundimage/chessboard_background.jpg"));
+                setScene(m_chessBoard);
+                break;
+        }
+    });
 
 	// Themes Setting
-	connect(m_themesSetting, &ThemesSetting::backActivated, [this]() {
-		setStyleSheet(QString("QGraphicsView { border-image: url(%1) 0 0 0 0 stretch stretch; }").arg("./resources/backgroundimage/chessgame_menu.jpg"));
+    connect(m_themesSetting, &ThemesSetting::backActivated, this, [&]() {
+        if(sceneNum == 1){
+            m_mainMenu->sceneNum = sceneNum;
+            m_mainMenu->curState = 4;
+            m_mainMenu->hideAllButtons();
+            m_mainMenu->setupState(4);
+        }
+        setStyleSheet(QString("QGraphicsView { border-image: url(%1) 0 0 0 0 stretch stretch; }").arg(":/assets/backgroundimage/chessgame_menu.jpg"));
 		setScene(m_mainMenu);
 	});
-	connect(m_themesSetting, &ThemesSetting::saveChangeActivated, [this]() {
-		setStyleSheet(QString("QGraphicsView { border-image: url(%1) 0 0 0 0 stretch stretch; }").arg("./resources/backgroundimage/chessgame_menu.jpg"));
+    connect(m_themesSetting, &ThemesSetting::saveChangeActivated, this, [&]() {
+        setStyleSheet(QString("QGraphicsView { border-image: url(%1) 0 0 0 0 stretch stretch; }").arg(":/assets/backgroundimage/chessgame_menu.jpg"));
 		m_chessBoard->setTheme(m_themesSetting->tilesTheme, m_themesSetting->piecesTheme);
 	});
 
 	// Settings Menu
-	connect(m_settingsMenu, &SettingsMenu::backActivated, [this]() {
-		setStyleSheet(QString("QGraphicsView { border-image: url(%1) 0 0 0 0 stretch stretch; }").arg("./resources/backgroundimage/chessgame_menu.jpg"));
-		setScene(m_mainMenu);
+    connect(m_settingsMenu, &SettingsMenu::backActivated, this, [&]() {
+        if(sceneNum == 1){
+            m_mainMenu->sceneNum = sceneNum;
+            m_mainMenu->curState = 4;
+            m_mainMenu->hideAllButtons();
+            m_mainMenu->setupState(4);
+        }
+        setStyleSheet(QString("QGraphicsView { border-image: url(%1) 0 0 0 0 stretch stretch; }").arg(":/assets/backgroundimage/chessgame_menu.jpg"));
+        setScene(m_mainMenu);
 	});
+    connect(m_settingsMenu, &SettingsMenu::soundEffectVolumeChanged, this, [&](){
+        m_chessBoard->soundEffect.resetVolume(m_settingsMenu->soundEffectVolume);
+    });
 
 	// ChessBoard
-	connect(m_chessBoard, &ChessBoard::menuActivated, [this]() {
-		setStyleSheet(QString("QGraphicsView { border-image: url(%1) 0 0 0 0 stretch stretch; }").arg("./resources/backgroundimage/chessgame_menu.jpg"));
+    connect(m_chessBoard, &ChessBoard::menuActivated, this, [&]() {
+        m_mainMenu->sceneNum = sceneNum;
+        m_mainMenu->curState = 4;
+        m_mainMenu->hideAllButtons();
+        m_mainMenu->setupState(4);
+        setStyleSheet(QString("QGraphicsView { border-image: url(%1) 0 0 0 0 stretch stretch; }").arg(":/assets/backgroundimage/chessgame_menu.jpg"));
 		setScene(m_mainMenu);
 	});
-	connect(m_chessBoard, &ChessBoard::exitActivated, [this]() {
+    connect(m_chessBoard, &ChessBoard::loadGameActivated, this, [&](){
+        m_loadGameUI->reloadJsonFileList();
+        setScene(m_loadGameUI);
+    });
+    connect(m_chessBoard, &ChessBoard::exitActivated, this, [&]() {
 		close();
 	});
+    connect(m_chessBoard, &ChessBoard::newGameActivated, this, [&]() {
+        m_mainMenu->sceneNum = sceneNum;
+        m_mainMenu->curState = 1;
+        m_mainMenu->hideAllButtons();
+        m_mainMenu->setupState(1);
+        setStyleSheet(QString("QGraphicsView { border-image: url(%1) 0 0 0 0 stretch stretch; }").arg(":/assets/backgroundimage/chessgame_menu.jpg"));
+        setScene(m_mainMenu);
+    });
 }
 
 void View::keyPressEvent(QKeyEvent *event) {
@@ -80,13 +133,12 @@ void View::keyPressEvent(QKeyEvent *event) {
 	}
 }
 
-//void View::mousePressEvent(QMouseEvent* event) {
-//	setCursor(Qt::ClosedHandCursor);
-//	QGraphicsView::mousePressEvent(event);
-//}
-//
-//
-//void View::mouseReleaseEvent(QMouseEvent* event) {
-//	setCursor(customCursor);
-//	QGraphicsView::mouseReleaseEvent(event);
-//}
+View::~View() {
+    // // Delete dynamically allocated scenes
+    // delete m_gameScene;
+    // delete m_chessBoard;
+    // delete m_mainMenu;
+    // delete m_themesSetting;
+    // delete m_settingsMenu;
+    // delete m_loadGameUI;
+}

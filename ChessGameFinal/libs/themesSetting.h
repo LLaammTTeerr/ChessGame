@@ -16,6 +16,7 @@ class ThemesSetting : public QGraphicsScene {
 
 public:
 	ThemesSetting(QObject* parent = nullptr);
+    ~ThemesSetting();
 	int piecesTheme = 0, tilesTheme = 0;
 
 signals:
